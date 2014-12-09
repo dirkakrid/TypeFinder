@@ -11,8 +11,13 @@ setup(name='typefinder',
       author='Glen Harmon',
       long_description=readme(),
       license='MIT',
-      packages=['typefinder'],
+      packages=[
+            'typefinder',
+            'typefinder.ipv4',
+            'typefinder.ipv6',
+            'typefinder.number',
+      ],
       install_requires=[
-          'ipaddress',
+            'ipaddress',
       ],
       zip_safe=False)
