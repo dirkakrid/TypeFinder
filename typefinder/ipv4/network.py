@@ -2,7 +2,21 @@
 import re
 import ipaddress
 
-from plan.types import generic
+from .. import generic
+
+def string_prefix(network):
+    """ 
+        Returns the common string prefix of a network and all it's hosts 
+    """
+    valid(network)
+    network_prefix = u""
+    network = ipaddress.IPv4Network(network)
+    for index, place in enumerate(network.network_address.exploded):
+        if place != network.broadcast_address.exploded[index]:
+            break
+        network_prefix += place
+    network_prefix += "*"
+    return network_prefix
 
 def search(text):
     text = generic.clean(text)

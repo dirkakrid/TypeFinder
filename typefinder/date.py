@@ -2,7 +2,7 @@
 import re
 from datetime import datetime
 
-from ..configuration import Configuration
+from configuration import Configuration
 
 import generic
 

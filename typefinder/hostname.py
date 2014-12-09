@@ -6,7 +6,7 @@ import date
 import ipv4
 import generic
 
-from ..configuration import Configuration
+from configuration import Configuration
 
 _checks = 2
 _passed_checks = 0

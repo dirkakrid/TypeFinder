@@ -3,7 +3,7 @@ import re
 import ipaddress
 
 from subnet import subnets
-from plan.types import generic
+from .. import generic
 
 import ip
 

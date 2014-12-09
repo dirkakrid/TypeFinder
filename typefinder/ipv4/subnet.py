@@ -3,7 +3,7 @@ import re
 
 import ipaddress
 
-from plan.types import generic
+from .. import generic
 
 subnets =  [ipaddress.IPv4Network(u"0.0.0.0/%s" % cidr).netmask.exploded for cidr in range(0,33)]
 

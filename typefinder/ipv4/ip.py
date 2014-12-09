@@ -3,7 +3,7 @@ import re
 
 import ipaddress
 
-from plan.types import generic
+from .. import generic
 import subnet, wildcard, ip_range
 
 ip_re = r'(?<![0-9/-])(?:(?:\d+\.){3}\d+)(?![0-9/-])'

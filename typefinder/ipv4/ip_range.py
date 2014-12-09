@@ -4,7 +4,7 @@ import re
 import ipaddress
 
 import ip
-from plan.types import generic
+from .. import generic
 
 def _invalid(ip_range):
     raise ValueError('\'{0}\' is not a valid IPv4 address range'.format(ip_range))

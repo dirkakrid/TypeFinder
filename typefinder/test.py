@@ -6,11 +6,11 @@ import datetime
 
 from nose.tools import assert_equals, assert_true, assert_false, assert_raises
 
-from ..configuration import Configuration
+from configuration import Configuration
 
-import plan.types.vlan as vlan
-import plan.types.date as date
-import plan.types.hostname as hostname
+import vlan
+import date
+import hostname
 
 class Test_vlan(object):
     """ Test vlan """
