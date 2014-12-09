@@ -5,9 +5,12 @@ import ipaddress
 
 from .. import generic
 
-subnets =  [ipaddress.IPv4Network(u"0.0.0.0/%s" % cidr).netmask.exploded for cidr in range(0,33)]
-
 import ip
+import wildcard
+
+def dump():
+    """ Returns a list of all subnet masks """
+    return wildcard.dump(_subnets=True)
 
 def search(text):
     text = generic.clean(text)
@@ -33,7 +36,7 @@ def _clean(subnet):
 
 def valid(subnet):
     subnet = _clean(subnet)
-    if subnet not in subnets:
+    if subnet not in dump():
         return False
     return True
 

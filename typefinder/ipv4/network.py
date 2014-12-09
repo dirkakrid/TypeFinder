@@ -4,11 +4,36 @@ import ipaddress
 
 from .. import generic
 
+
+def supernets(network):
+    """ Return supernets of the network """
+    network = clean(network)
+    network = ipaddress.IPv4Network(network)
+    current_prefix = network.prefixlen
+    supernets = list()
+    for prefix in reversed(range(0, current_prefix + 1)):
+        supernets.append(network.supernet(new_prefix=prefix).exploded)
+    return supernets[1:]
+
+def subnets(network):
+    """ Return subnets of the network """
+    network = clean(network)
+    network = ipaddress.IPv4Network(network)
+    current_prefix = network.prefixlen
+    subnets = list()
+    if current_prefix == 32:
+        subnets.append(network.exploded)
+    else:
+        for prefix in range(current_prefix, 32):
+            for current_network in network.subnets(new_prefix=prefix):
+                subnets.append(current_network.exploded)
+    return subnets
+
 def string_prefix(network):
     """ 
         Returns the common string prefix of a network and all it's hosts 
     """
-    valid(network)
+    network = clean(network)
     network_prefix = u""
     network = ipaddress.IPv4Network(network)
     for index, place in enumerate(network.network_address.exploded):

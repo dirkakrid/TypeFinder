@@ -37,7 +37,7 @@ class Test_ip(object):
         assert_false(ip.valid('1.1.1.1/24'))
         assert_false(ip.valid('1.1.1.1-1.1.1.2'))
         # Allow subnets to match subnet ips
-        for _subnet in subnet.subnets:
+        for _subnet in subnet.dump():
             assert_false(ip.valid(_subnet))
 
         
@@ -76,8 +76,7 @@ class Test_network(object):
 
     def test_special(self):
         """ Non standard """
-        assert_equals(network.clean('1.1.1.1/24'), '1.1.1.0/24')
-        assert_raises(ValueError, network.clean, '1.1.1.1')
+        assert_equals(network.supernets('1.2.3.0/24'), [ u'1.2.2.0/23', u'1.2.0.0/22', u'1.2.0.0/21', u'1.2.0.0/20', u'1.2.0.0/19', u'1.2.0.0/18', u'1.2.0.0/17', u'1.2.0.0/16', u'1.2.0.0/15', u'1.0.0.0/14', u'1.0.0.0/13', u'1.0.0.0/12', u'1.0.0.0/11', u'1.0.0.0/10', u'1.0.0.0/9', u'1.0.0.0/8', u'0.0.0.0/7', u'0.0.0.0/6', u'0.0.0.0/5', u'0.0.0.0/4', u'0.0.0.0/3', u'0.0.0.0/2', u'0.0.0.0/1', u'0.0.0.0/0'])
 
     def test_search(self):
         assert_equals(network.search('blah blah 1.2.3.4 255.255.255.0. blah'), ['1.2.3.0/24'])

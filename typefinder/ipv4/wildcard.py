@@ -1,11 +1,24 @@
 # -*- coding: utf-8 -*-
 import re
+import math
+
 import ipaddress
 
-from subnet import subnets
 from .. import generic
 
 import ip
+
+def dump(_subnets=False):
+    """ Returns a list of all wildcard masks """
+    wildcard_ints = [int(math.pow(2, i)) - 1 for i in range(0, 33)]
+    wildcard = list()
+    for wildard_int in wildcard_ints:
+        wc = bin(wildard_int).replace('0b', '').zfill(32)
+        if _subnets:
+            wc = wc[::-1]
+        wc = [str(int(x, 2)) for x in re.split(r'([01]{8})', wc) if x]
+        wildcard.append('.'.join(wc))
+    return wildcard
 
 def search(text):
     text = generic.clean(text)
@@ -24,20 +37,13 @@ def search(text):
                 wildcards.append(match)
     return wildcards
 
-wildcards = []
-for subnet in subnets:
-    binary = bin(int(ipaddress.IPv4Address(subnet))).replace('0b','')
-    flipped = binary[::-1]
-    wildcard = ipaddress.IPv4Address(int(flipped, 2)).exploded
-    wildcards.append(wildcard)
-
 def _clean(wildcard):
     wildcard = unicode(wildcard)
     return wildcard.replace(' ','')
 
 def valid(wildcard):
     wildcard = _clean(wildcard)
-    if wildcard not in wildcards:
+    if wildcard not in dump():
         return False
     return True
 
