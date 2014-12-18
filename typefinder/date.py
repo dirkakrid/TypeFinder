@@ -6,6 +6,9 @@ from configuration import Configuration
 
 import generic
 
+
+what = 'date'
+
 _time_formats = Configuration.search_date_formats
 _standard_format = Configuration.standard_date_format
 

@@ -12,14 +12,13 @@ from configuration import Configuration
 _checks = 2
 _passed_checks = 0
 
+what = 'hostname'
+
 def search(text):
     text = generic.clean(text)
     text = ' '.join([x.lower().strip('.,') for x in text.split()])
-    text = generic.remove_type(text, ipv4.ip)
-    text = generic.remove_type(text, ipv4.network)
-    text = generic.remove_type(text, ipv4.ip_range)
-    text = generic.remove_type(text, ipv4.subnet)
-    text = generic.remove_type(text, ipv4.wildcard)
+    for t in (ipv4.ip, ipv4.network, ipv4.ip_range, ipv4.subnet, ipv4.wildcard, vlan):
+        text = generic.remove_type(text, t)
     hostnames = list()
     for token in text.split():
         if valid(token):

@@ -8,6 +8,8 @@ from .. import generic
 import ip
 import wildcard
 
+what = 'ipv4.subnet'
+
 def dump():
     """ Returns a list of all subnet masks """
     return wildcard.dump(_subnets=True)

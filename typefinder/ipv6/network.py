@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import ipaddress
 
+what = 'ipv6.network'
+
 def valid(network):
     try:
         ipaddress.IPv6Network(unicode(network))

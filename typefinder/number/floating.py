@@ -2,6 +2,8 @@
 
 from .. import generic
 
+what = 'number.floating'
+
 def search(text):
     floating_point = list()
     text = ' '.join(unicode(text).split()).strip(',')

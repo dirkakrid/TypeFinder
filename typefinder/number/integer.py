@@ -2,6 +2,8 @@
 
 from .. import generic
 
+what = 'number.integer'
+
 def search(text):
     integers = list()
     text = ' '.join(unicode(text).split()).strip(',')

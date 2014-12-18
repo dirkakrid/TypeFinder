@@ -6,6 +6,8 @@ import ipaddress
 import ip
 from .. import generic
 
+what = 'ipv4.ip_range'
+
 def _invalid(ip_range):
     raise ValueError('\'{0}\' is not a valid IPv4 address range'.format(ip_range))
 

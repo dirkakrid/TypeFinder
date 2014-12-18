@@ -6,6 +6,7 @@ import subnet
 from ..configuration import Configuration
 from .. import generic
 
+what = 'ipv4.network'
 
 def supernets(network):
     """ Return supernets of the network """

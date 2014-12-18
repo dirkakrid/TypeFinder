@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 import ipaddress
 
+what = 'ipv6.ip'
+
 def valid(ip):
     ip = unicode(ip)
     try:

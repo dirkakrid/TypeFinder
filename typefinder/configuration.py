@@ -16,6 +16,12 @@ class Configuration(object):
         r'(?:\d{1,3}\.){2}(?:[A-Za-z]{1,3}\.)[A-Za-z]{1,3}(?:/\d{1,2})?(?!\.?[A-Za-z0-9])', # Matches 1.2.x.x/24 1.2.x.x
         r'(?:\d{1,3}\.)(?:[A-Za-z]{1,3}\.){2}[A-Za-z]{1,3}(?:/\d{1,2})?(?!\.?[A-Za-z0-9])', # Matches 1.x.x.x/24 1.x.x.x
         )
+    valid_vlan_re = (
+        r'(?<![\-\.\da-z])(?:vlan[- ]?(?:\s+id\s+)?)?\d+(?![\.\d\-a-z])',
+        r'vlan\s+|-id\s+|-\d{1,4}(?![A-Za-z0-9])',
+        r'vlan-\d{1,4}(?![A-Za-z0-9])',
+        r'\d{1,4}(?![A-Za-z0-9])',
+        )
     search_date_formats = (
         '%d %m %Y', # 25 12 1999
         '%d-%m-%Y', # 25-12-1999

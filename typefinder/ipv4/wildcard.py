@@ -8,6 +8,8 @@ from .. import generic
 
 import ip
 
+what = 'ipv4.wildcard'
+
 def dump(_subnets=False):
     """ Returns a list of all wildcard masks """
     wildcard_ints = [int(math.pow(2, i)) - 1 for i in range(0, 33)]
