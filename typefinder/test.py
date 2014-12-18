@@ -120,6 +120,7 @@ class Test_hostname(object):
         assert_equals(hostname.search('blah blah 0.0.0.255'), [])
         assert_equals(hostname.search('blah blah 1.2.3.4 255.255.255.0'), [])
         assert_equals(hostname.search('blah blah 1.2.3.4-2.3.4.5'), [])
+        assert_equals(hostname.search('vlan-12 in 1.2.3.4'), [])
 
 class Test_date(object):
     """ Test date """

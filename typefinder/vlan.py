@@ -3,11 +3,14 @@ import re
 
 import date
 import ipv4
-
 import number
 import generic
 
+from configuration import Configuration
+
 vlan_id_re = r'(?<![\-\.\da-z])(?:vlan[- ]?(?:\s+id\s+)?)?\d+(?![\.\d\-a-z])'
+
+what = 'vlan'
 
 def _remove_invalid_types(text):
     text = generic.remove_type(text, date)
@@ -16,25 +19,34 @@ def _remove_invalid_types(text):
     text = generic.remove_type(text, ipv4.ip_range)
     return text
 
+def _clean(vlan_id):
+    vlan_id = ' '.join(unicode(vlan_id).split()).lower()
+    for rep in ('vlan-id', 'vlan-', 'vlan'):
+        vlan_id = vlan_id.replace(rep, '')
+    vlan_id = vlan_id.strip()
+    return vlan_id
+
 def search(text):
     text = ' '.join(unicode(text).split()).strip(',')
-    vlans = list()
+    vlans = set()
     text = _remove_invalid_types(text)
-    matches = re.findall(vlan_id_re, text, re.I)
-    for match in matches:
-        match = match.lower().replace('vlan','').replace('-', '')
-        match = match.replace('id', '')
-        match = match.strip()
-        if valid(match):
-            vlans.append(clean(match))
+    matches = list()
+    for vlan_re in Configuration.valid_vlan_re:
+        for match in re.findall(vlan_id_re, text, re.I):
+            print 'match!:', match
+            if valid(match):
+                text = text.replace(match, '')
+                vlans.add(_clean(match))
+
     for match in text.split():
         if valid(match):
             vlan_id = clean(match)
             if vlan_id not in vlans:
-                vlans.append(vlan_id)
-    return vlans
+                vlans.add(vlan_id)
+    return [clean(x) for x in vlans]
 
 def valid(vlan_id):
+    vlan_id = _clean(vlan_id)
     if number.integer.valid(vlan_id):
         if not date.valid(vlan_id):
             vlan_id = number.integer.clean(vlan_id)
