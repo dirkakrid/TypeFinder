@@ -13,7 +13,7 @@ class Test_ip_range(object):
         assert_false(ip_range.valid(' 1.1.1.1 - 1.1.1.a   '))
         assert_false(ip_range.valid('1.1.1.1'))
         assert_false(ip_range.valid('1.1.1.0/24'))
-        
+                
     def test_cleaning(self):
         assert_equals(ip_range.clean(' 1.1.1.2 - 1.1.1.1   '), '1.1.1.1-1.1.1.2')
         assert_raises(ValueError, ip_range.clean, '1.1.1.0/24')
@@ -69,6 +69,19 @@ class Test_network(object):
         assert_false(network.valid('1.1.1.1'))
         assert_false(network.valid('1.1.1.1-1.1.1.2'))
         assert_false(network.valid('crap'))
+
+    def test_fuzzy_validation(self):
+        assert_true(network.fuzzy_valid('1.2.3.x/24'))
+        assert_true(network.fuzzy_valid('1.2.3.Y'))
+        assert_true(network.fuzzy_valid('1.2.3.Ycf'))
+        assert_true(network.fuzzy_valid('1.2.3.x'))
+        assert_true(network.fuzzy_valid('1.2.x.x'))
+        assert_true(network.fuzzy_valid('1.x.x.x'))
+        
+        assert_false(network.fuzzy_valid('x.x.x.x'))
+        assert_false(network.fuzzy_valid('x.2.x.x'))
+        assert_false(network.fuzzy_valid('1.2.x.0'))
+        assert_false(network.fuzzy_valid('1.2.3.Ycfx'))
         
     def test_cleaning(self):
         assert_equals(network.clean('1.1.1.1/24'), '1.1.1.0/24')
@@ -82,6 +95,20 @@ class Test_network(object):
         assert_equals(network.search('blah blah 1.2.3.4 255.255.255.0. blah'), ['1.2.3.0/24'])
         assert_equals(network.search('blah blah 1.2.3.4/255.255.255.0, blah'), ['1.2.3.0/24'])
         assert_equals(network.search('blah blah 1.2.0.0/16 blah'), ['1.2.0.0/16'])
+
+    def test_fuzzy_search(self):
+        assert_equals(network.fuzzy_search('blah blah 1.x.x.x. blah'), ['1.0.0.0/8'])
+        assert_equals(network.fuzzy_search('blah blah 1.x.x.x 255.255.0.0. blah'), ['1.0.0.0/16'])
+        assert_equals(network.fuzzy_search('blah blah 1.x.x.x/255.255.0.0. blah'), ['1.0.0.0/16'])
+        assert_equals(network.fuzzy_search('blah blah 1.2.x.x. blah'), ['1.2.0.0/16'])
+        assert_equals(network.fuzzy_search('blah blah 1.2.x.x 255.255.255.128. blah'), ['1.2.0.0/25'])
+        assert_equals(network.fuzzy_search('blah blah 1.2.x.x/255.255.255.128. blah'), ['1.2.0.0/25'])
+        assert_equals(network.fuzzy_search('blah blah 1.2.3.x 255.255.255.0. blah'), ['1.2.3.0/24'])
+        assert_equals(network.fuzzy_search('blah blah 1.2.3.x/255.255.255.128. blah'), ['1.2.3.0/25'])
+        assert_equals(network.fuzzy_search('blah blah 1.2.3.x. blah'), ['1.2.3.0/24'])
+        assert_equals(network.fuzzy_search('blah blah 1.2.3.0/24. blah'), [])
+        assert_equals(network.fuzzy_search('blah blah 1.2.3.0 255.255.255.0. blah'), [])
+        assert_equals(network.fuzzy_search('blah blah 1.2.3.0/255.255.255.0. blah'), [])
 
 class Test_subnet(object):
     """ Test subnet """

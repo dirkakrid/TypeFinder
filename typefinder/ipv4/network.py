@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 import re
 import ipaddress
+import subnet
 
+from ..configuration import Configuration
 from .. import generic
 
 
@@ -43,23 +45,68 @@ def string_prefix(network):
     network_prefix += "*"
     return network_prefix
 
+
 def search(text):
     text = generic.clean(text)
     text = ' '.join(unicode(text).split())
-    matches = re.findall('(?:\d+\.){3}\d+/\d+', text, re.I)
-    matches = matches + re.findall('(?:\d+\.){3}\d+/(?:\d+\.){3}\d+', text, re.I)
-    matches = matches + [_clean(x) for x in re.findall('(?:\d+\.){3}\d+\s+(?:\d+\.){3}\d+', text, re.I)]
+    matches = list()
+    for re_network_expresssion in Configuration.valid_ipv4_network_re:
+        matches = matches + [_clean(x) for x in re.findall(re_network_expresssion, text, re.I)]
     networks = list()
     for match in matches:
         if valid(match):
             networks.append(clean(match))
     return networks
 
+def fuzzy_search(text):
+    """ Return fuzzy matches """
+    exact_matches = search(text)
+    text = generic.clean(text)
+    text = ' '.join(unicode(text).split())
+    matches = list()
+    for re_network_expresssion in Configuration.fuzzy_ipv4_network_re:
+        for match in re.findall(re_network_expresssion, text, re.I):
+            # Remove matches from the text
+            text = text.replace(match, '')
+            text = ' '.join(text.split())
+            matches.append(match)
+    networks = list()
+    for match in matches:
+        if fuzzy_valid(match) and (match not in exact_matches):
+            networks.append(clean(_fuzzy_clean(match)))
+    return networks
+
+def _fuzzy_clean(network):
+    network = _clean(network)
+    # 1.2.3.yyy -> 1.2.3.x
+    network = re.sub(r'[a-zA-Z]{1,3}', 'x', network)
+    if not re.search(r'/\d+$', network) and not subnet.valid(network.split('/')[-1]):
+        classful_prefixes = (24, 16, 8)
+        if network.count('x') in range(1, 4):
+            network = '{0}/{1}'.format(network, classful_prefixes[network.count('x') - 1])
+    network = network.replace('x', '0')
+    return network
+
 def _clean(network):
     network = unicode(network)
     network = ' '.join(network.split())
     network = network.replace(' ', '/')
     return network
+
+def fuzzy_valid(network):
+    invalid = True
+    for re_network_expresssion in Configuration.fuzzy_ipv4_network_re:
+        if re.findall(re_network_expresssion, network, re.I):
+            invalid = False
+            break
+    if invalid:
+        return False    
+    network = _clean(network)
+    network = _fuzzy_clean(network)
+    for re_network_expresssion in Configuration.valid_ipv4_network_re:
+        if re.findall(re_network_expresssion, network, re.I):
+            return True
+    return False
 
 def valid(network):
     network = _clean(network)
