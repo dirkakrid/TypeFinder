@@ -33,7 +33,6 @@ def search(text):
     matches = list()
     for vlan_re in Configuration.valid_vlan_re:
         for match in re.findall(vlan_id_re, text, re.I):
-            print 'match!:', match
             if valid(match):
                 text = text.replace(match, '')
                 vlans.add(_clean(match))
