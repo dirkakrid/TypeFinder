@@ -19,6 +19,10 @@ class Test_vlan(object):
         for x in range(1, 4097):
             assert_true(vlan.valid(x))
             assert_true(vlan.valid(str(x)))
+        assert_false(vlan.valid(650.2))
+        assert_true(vlan.valid(650))
+        assert_true(vlan.valid('650'))
+        assert_true(vlan.valid('650.0'))
         assert_false(vlan.valid('05/07/2012'))
 
     def test_cleaning(self):
@@ -26,6 +30,7 @@ class Test_vlan(object):
         assert_raises(ValueError, vlan.clean, 'crap')
 
     def test_search(self):
+        assert_equals(vlan.search('123.0'), [123])
         assert_equals(vlan.search('this is vlan 222'), [222])
         assert_equals(vlan.search('this is vlan id vlan-4096'), [4096])
         assert_equals(vlan.search('this is vlan id vlan-0'), [])
@@ -84,6 +89,9 @@ class Test_hostname(object):
         assert_true(hostname.valid('appa'))
         assert_true(hostname.valid('appb'))
         assert_false(hostname.valid('05/07/2012'))
+        # VLAN Matches
+        assert_false(hostname.valid('620.0'))
+        assert_false(hostname.valid('620'))
 
         # Bug fix: matching only the root level domain
         assert_false(hostname.valid('com'))

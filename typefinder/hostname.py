@@ -3,6 +3,7 @@
 import re
 
 import date
+import vlan
 import ipv4
 import generic
 
@@ -108,9 +109,10 @@ def valid(hostname):
     confidence = 0
     # Invalid Hostname checks
     if not _host_length(hostname) or not _host_characters(hostname):
-        #print(u'{0} basic rule failure'.format(hostname))
         return False
     if date.valid(hostname):
+        return False
+    if vlan.valid(hostname):
         return False
     if _in_host_file(hostname):
         #print(u'{0} valid 1'.format(hostname))

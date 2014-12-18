@@ -20,7 +20,6 @@ def search(text):
     text = ' '.join(unicode(text).split()).strip(',')
     vlans = list()
     text = _remove_invalid_types(text)
-
     matches = re.findall(vlan_id_re, text, re.I)
     for match in matches:
         match = match.lower().replace('vlan','').replace('-', '')
@@ -28,6 +27,11 @@ def search(text):
         match = match.strip()
         if valid(match):
             vlans.append(clean(match))
+    for match in text.split():
+        if valid(match):
+            vlan_id = clean(match)
+            if vlan_id not in vlans:
+                vlans.append(vlan_id)
     return vlans
 
 def valid(vlan_id):
